@@ -15,7 +15,7 @@ export const intervalMs = 3 * 60 * 60 * 1000; // every 3 hours
 
 export async function run() {
   const live = Object.values(state.drafts).filter(d => d.live).length;
-  const dual = Object.values(state.permanence).filter(p => p.txt?.ok && p.mirror?.ok).length;
+  const full = Object.values(state.permanence).filter(p => p.txt?.ok && p.mirror?.ok && p.otenet?.ok).length;
 
   // Rotate the spotlight through the suite by day-of-year
   const day = Math.floor(Date.now() / 86400000);
@@ -41,7 +41,7 @@ export async function run() {
 
   const content = {
     heroLine,
-    statusLine: `${live}/${DRAFTS.length} live on the Datatracker · ${dual}/${DRAFTS.length} dual-archive verified`,
+    statusLine: `${live}/${DRAFTS.length} live on the Datatracker · ${full}/${DRAFTS.length} verified on all three archives`,
     spotlight: { id: spotlight.id, short: spotlight.short, note: spotlightNote },
     layers: LAYERS.map(l => ({
       ...l,

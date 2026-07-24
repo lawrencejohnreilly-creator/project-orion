@@ -222,7 +222,7 @@
 
 <footer>
   <div class="wrap">
-    <div>Every draft is anchored under Dual-Layer Digital Permanence — Bitcoin timestamping via OpenTimestamps, Zenodo DOI archival, IPFS, and IETF submission — and mirrored independently at nic.funet.fi.</div>
+    <div>Every draft is anchored under Dual-Layer Digital Permanence — Bitcoin timestamping via OpenTimestamps, Zenodo DOI archival, IPFS, and IETF submission — and mirrored independently at nic.funet.fi (Finland) and ftp.otenet.gr (Greece).</div>
     <div class="mono" style="margin-top:8px">Datatracker author profiles: lawrencejohnreilly@gmail.com · lreilly250@gmail.com</div>
   </div>
 </footer>
@@ -310,8 +310,14 @@ function renderDetail() {
   if (perm) {
     chips.push(`<span class="chip ${perm.txt?.ok ? 'ok' : 'bad'}">ietf archive ${perm.txt?.ok ? '✓' : '✗'}</span>`);
     chips.push(`<span class="chip ${perm.mirror?.ok ? 'ok' : 'bad'}">funet mirror ${perm.mirror?.ok ? '✓' : '✗'}</span>`);
+    chips.push(`<span class="chip ${perm.otenet?.ok ? 'ok' : 'bad'}">otenet mirror ${perm.otenet?.ok ? '✓' : '✗'}</span>`);
   }
   if (dt?.pages) chips.push(`<span class="chip">${dt.pages} pages</span>`);
+  const rev = dt?.rev || '00';
+  const txtUrl = `https://www.ietf.org/archive/id/${d.id}-${rev}.txt`;
+  const htmlUrl = `https://www.ietf.org/archive/id/${d.id}-${rev}.html`;
+  const mirrorUrl = `https://www.nic.funet.fi/pub/mirrors/ftp.ietf.org/internet-drafts/${d.id}-${rev}.txt`;
+  const otenetUrl = `https://ftp.otenet.gr/doc/internet-drafts/${d.id}-${rev}.txt`;
   $('detail').innerHTML = `
     <h2>Draft Detail</h2>
     <div class="draft-id">${d.id}</div>
@@ -321,9 +327,10 @@ function renderDetail() {
     <div class="meta">${chips.join('')}</div>
     <div class="links">
       <a href="${d.urls.datatracker}" target="_blank" rel="noopener">Datatracker</a>
-      <a href="${d.urls.txt}" target="_blank" rel="noopener">Plain text</a>
-      <a href="${d.urls.html}" target="_blank" rel="noopener">HTML</a>
-      <a href="${d.urls.mirror}" target="_blank" rel="noopener">funet mirror</a>
+      <a href="${txtUrl}" target="_blank" rel="noopener">Plain text</a>
+      <a href="${htmlUrl}" target="_blank" rel="noopener">HTML</a>
+      <a href="${mirrorUrl}" target="_blank" rel="noopener">funet mirror</a>
+      <a href="${otenetUrl}" target="_blank" rel="noopener">otenet mirror</a>
     </div>`;
 }
 
