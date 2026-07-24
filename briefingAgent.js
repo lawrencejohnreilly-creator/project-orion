@@ -5,9 +5,9 @@
 // key it falls back to the curated manifest summary. Briefs are proposed
 // through the oversight queue, so in oversight mode a human signs off.
 // ---------------------------------------------------------------------------
-import { DRAFTS } from "../drafts.js";
-import { state, log, recordRun, propose, save } from "../state.js";
-import { askClaude, hasClaude } from "../claude.js";
+import { DRAFTS } from "./drafts.js";
+import { state, log, recordRun, propose, save } from "./state.js";
+import { askClaude, hasClaude } from "./claude.js";
 
 export const name = "briefing-officer";
 export const intervalMs = 6 * 60 * 60 * 1000; // every 6 hours

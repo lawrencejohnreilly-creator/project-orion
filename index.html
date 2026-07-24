@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Orion — The Reilly Protocol Suite</title>
+<meta name="description" content="Eighteen IETF Internet-Drafts rendered as a living constellation, maintained by an autonomous agent crew.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #0A0E1E;
+    --panel: #131A30;
+    --panel-edge: #232E4E;
+    --starlight: #E8EDF7;
+    --rigel: #9FC4FF;       /* blue-white giants */
+    --betelgeuse: #FF7A59;  /* red supergiant */
+    --dim: #7C88A6;
+    --ok: #6FD3A3;
+    --warn: #F0C36B;
+    --display: 'Michroma', sans-serif;
+    --body: 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--sky);
+    color: var(--starlight);
+    font-family: var(--body);
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  a { color: var(--rigel); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :focus-visible { outline: 2px solid var(--rigel); outline-offset: 2px; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---- Hero ---- */
+  header { padding: 56px 0 28px; position: relative; }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .22em; color: var(--dim); text-transform: uppercase; }
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(30px, 5vw, 56px);
+    letter-spacing: .06em;
+    margin: 10px 0 14px;
+  }
+  h1 .accent { color: var(--rigel); }
+  #hero-line { font-size: 18px; color: var(--starlight); max-width: 640px; }
+  #status-line { font-family: var(--mono); font-size: 13px; color: var(--ok); margin-top: 12px; }
+  .byline { margin-top: 6px; font-size: 14px; color: var(--dim); }
+
+  /* ---- Layout ---- */
+  .grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; margin: 24px 0 48px; }
+  @media (max-width: 940px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .panel h2 {
+    font-family: var(--mono); font-size: 13px; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--dim); margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  /* ---- Star map ---- */
+  #map-panel { padding: 8px; }
+  #starmap { width: 100%; height: auto; display: block; }
+  .edge { stroke: #2A3860; stroke-width: 1; }
+  .star { cursor: pointer; }
+  .star circle.core { transition: r .15s ease; }
+  .star:hover circle.core, .star.selected circle.core { r: 9; }
+  .star text {
+    font-family: var(--mono); font-size: 13px; fill: var(--dim);
+    pointer-events: none;
+  }
+  .star:hover text, .star.selected text { fill: var(--starlight); }
+  .glow-red  { fill: var(--betelgeuse); }
+  .glow-blue { fill: var(--rigel); }
+  .glow-white{ fill: var(--starlight); }
+  @media (prefers-reduced-motion: no-preference) {
+    .twinkle { animation: twinkle 4s ease-in-out infinite; }
+    @keyframes twinkle { 0%,100% { opacity: .9; } 50% { opacity: .55; } }
+  }
+
+  /* ---- Draft detail ---- */
+  #detail { margin-top: 0; }
+  #detail .draft-id { font-family: var(--mono); font-size: 13px; color: var(--rigel); }
+  #detail h3 { font-size: 20px; margin: 6px 0 10px; }
+  #detail .brief { color: var(--starlight); }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+  .chip {
+    font-family: var(--mono); font-size: 12px; padding: 4px 10px;
+    border-radius: 999px; border: 1px solid var(--panel-edge); color: var(--dim);
+  }
+  .chip.ok { color: var(--ok); border-color: rgba(111,211,163,.4); }
+  .chip.bad { color: var(--warn); border-color: rgba(240,195,107,.4); }
+  .links { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; }
+
+  /* ---- Agents ---- */
+  .mode-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .toggle {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .08em;
+    background: transparent; border: 1px solid var(--panel-edge);
+    color: var(--dim); padding: 7px 14px; border-radius: 6px; cursor: pointer;
+  }
+  .toggle.active { border-color: var(--rigel); color: var(--rigel); }
+  .toggle.active.auto { border-color: var(--betelgeuse); color: var(--betelgeuse); }
+  .agent-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 8px 0; border-bottom: 1px solid var(--panel-edge); gap: 10px;
+  }
+  .agent-row:last-child { border-bottom: none; }
+  .agent-name { font-family: var(--mono); font-size: 13px; }
+  .agent-detail { font-size: 12px; color: var(--dim); text-align: right; }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 8px; background: var(--dim); }
+  .dot.ok { background: var(--ok); }
+  .dot.err { background: var(--betelgeuse); }
+
+  /* ---- Pending queue ---- */
+  .pending-item { padding: 10px 0; border-bottom: 1px solid var(--panel-edge); }
+  .pending-item:last-child { border-bottom: none; }
+  .pending-action { font-size: 14px; }
+  .pending-agent { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+  .btns { margin-top: 8px; display: flex; gap: 8px; }
+  .btn {
+    font-family: var(--mono); font-size: 12px; padding: 5px 12px;
+    border-radius: 6px; border: 1px solid var(--panel-edge);
+    background: transparent; color: var(--starlight); cursor: pointer;
+  }
+  .btn.approve { border-color: rgba(111,211,163,.5); color: var(--ok); }
+  .btn.reject { color: var(--dim); }
+  .empty { color: var(--dim); font-size: 14px; }
+
+  /* ---- Activity log ---- */
+  #log { max-height: 300px; overflow-y: auto; font-family: var(--mono); font-size: 12px; }
+  .log-line { padding: 4px 0; color: var(--dim); display: flex; gap: 10px; }
+  .log-line .t { color: #4A5878; flex-shrink: 0; }
+  .log-line .a { color: var(--rigel); flex-shrink: 0; }
+  .log-line.warn .a { color: var(--warn); }
+  .log-line.error .a { color: var(--betelgeuse); }
+
+  /* ---- Layers ---- */
+  section.layers { margin: 0 0 64px; }
+  .layer-block { margin-bottom: 28px; }
+  .layer-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 10px; }
+  .layer-head h2 { font-family: var(--display); font-size: 17px; letter-spacing: .04em; }
+  .layer-head .n { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+  .layer-blurb { color: var(--dim); font-size: 14px; margin-bottom: 12px; max-width: 720px; }
+  .draft-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--panel-edge);
+    border-radius: 8px; padding: 14px; cursor: pointer;
+  }
+  .card:hover { border-color: var(--rigel); }
+  .card .id { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+  .card .name { font-size: 15px; font-weight: 600; margin: 4px 0 6px; }
+  .card p { font-size: 13px; color: var(--dim); }
+
+  footer {
+    border-top: 1px solid var(--panel-edge);
+    padding: 28px 0 40px; color: var(--dim); font-size: 13px;
+  }
+  footer .mono { font-family: var(--mono); font-size: 12px; }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="eyebrow">The Reilly Protocol Suite · IETF Internet-Drafts</div>
+  <h1>PROJECT <span class="accent">ORION</span></h1>
+  <p id="hero-line">Eighteen Internet-Drafts. Five layers. One constellation, continuously verified.</p>
+  <div id="status-line">initializing agent constellation…</div>
+  <div class="byline">Lawrence John Reilly Jr. · Dual-Layer Digital Permanence</div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <div>
+      <div class="panel" id="map-panel">
+        <svg id="starmap" viewBox="0 0 1000 1200" role="img" aria-label="The 18 drafts of the suite arranged as the Orion constellation"></svg>
+      </div>
+      <div class="panel" id="detail" style="margin-top:24px">
+        <h2>Draft Detail</h2>
+        <p class="empty">Select a star to inspect its draft — status, brief, permanence verification, and source links.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <h2>Agent Constellation</h2>
+        <div class="mode-row">
+          <button class="toggle" id="btn-oversight" onclick="setMode('oversight')">HUMAN OVERSIGHT</button>
+          <button class="toggle" id="btn-auto" onclick="setMode('autonomous')">AUTONOMOUS</button>
+        </div>
+        <div id="agents"></div>
+      </div>
+
+      <div class="panel" style="margin-top:24px">
+        <h2>Pending Approvals</h2>
+        <div id="pending"><p class="empty">No actions awaiting approval.</p></div>
+      </div>
+
+      <div class="panel" style="margin-top:24px">
+        <h2>Mission Log</h2>
+        <div id="log"></div>
+      </div>
+
+      <div class="panel" style="margin-top:24px">
+        <h2>Suite Insight</h2>
+        <p id="insight" class="empty">Cartographer mapping the dependency graph…</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="layers wrap-inner" id="layers"></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Every draft is anchored under Dual-Layer Digital Permanence — Bitcoin timestamping via OpenTimestamps, Zenodo DOI archival, IPFS, and IETF submission — and mirrored independently at nic.funet.fi.</div>
+    <div class="mono" style="margin-top:8px">Datatracker author profiles: lawrencejohnreilly@gmail.com · lreilly250@gmail.com</div>
+  </div>
+</footer>
+
+<script>
+let manifest = null;
+let selected = null;
+
+const $ = id => document.getElementById(id);
+
+async function loadManifest() {
+  manifest = await (await fetch('/api/manifest')).json();
+  renderMap();
+  renderLayers();
+}
+
+function starColor(cls) {
+  return cls === 'red' ? 'var(--betelgeuse)' : cls === 'blue' ? 'var(--rigel)' : 'var(--starlight)';
+}
+
+function renderMap() {
+  const svg = $('starmap');
+  const byId = Object.fromEntries(manifest.drafts.map(d => [d.id, d]));
+  let out = '';
+  // faint background stars
+  for (let i = 0; i < 70; i++) {
+    const x = Math.random() * 1000, y = Math.random() * 1200, r = Math.random() * 1.1 + .3;
+    out += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${r.toFixed(1)}" fill="#31406B" class="twinkle" style="animation-delay:${(Math.random()*4).toFixed(1)}s"/>`;
+  }
+  for (const [a, b] of manifest.edges) {
+    const A = byId[a].star, B = byId[b].star;
+    out += `<line class="edge" x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}"/>`;
+  }
+  for (const d of manifest.drafts) {
+    const c = starColor(d.star.class);
+    const r = 4 + d.star.mag * 4;
+    const label = d.short.split(' — ')[0].split(' (')[0];
+    out += `<g class="star" tabindex="0" role="button" aria-label="${d.short}" data-id="${d.id}"
+              onclick="selectDraft('${d.id}')" onkeydown="if(event.key==='Enter')selectDraft('${d.id}')">
+      <circle cx="${d.star.x}" cy="${d.star.y}" r="${r + 9}" fill="${c}" opacity="0.10"/>
+      <circle class="core" cx="${d.star.x}" cy="${d.star.y}" r="${r}" fill="${c}"/>
+      <text x="${d.star.x + 16}" y="${d.star.y + 4}">${label}</text>
+    </g>`;
+  }
+  svg.innerHTML = out;
+}
+
+function renderLayers() {
+  $('layers').innerHTML = manifest.layers.map(l => {
+    const drafts = manifest.drafts.filter(d => d.layer === l.id);
+    return `<div class="layer-block">
+      <div class="layer-head"><h2>${l.name}</h2><span class="n">${drafts.length} draft${drafts.length > 1 ? 's' : ''}</span></div>
+      <p class="layer-blurb">${l.blurb}</p>
+      <div class="draft-cards">${drafts.map(d => `
+        <div class="card" onclick="selectDraft('${d.id}')" tabindex="0" role="button"
+             onkeydown="if(event.key==='Enter')selectDraft('${d.id}')">
+          <div class="id">${d.id}</div>
+          <div class="name">${d.short}</div>
+          <p>${d.summary}</p>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+let latestState = null;
+
+function selectDraft(id) {
+  selected = id;
+  document.querySelectorAll('.star').forEach(s => s.classList.toggle('selected', s.dataset.id === id));
+  renderDetail();
+  $('detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderDetail() {
+  if (!selected || !manifest) return;
+  const d = manifest.drafts.find(x => x.id === selected);
+  const st = latestState || {};
+  const dt = (st.drafts || {})[d.id];
+  const brief = (st.briefs || {})[d.id];
+  const perm = (st.permanence || {})[d.id];
+  const chips = [];
+  if (dt?.live) chips.push(`<span class="chip ok">datatracker · rev ${dt.rev}</span>`);
+  else if (dt) chips.push(`<span class="chip bad">datatracker unreachable</span>`);
+  if (perm) {
+    chips.push(`<span class="chip ${perm.txt?.ok ? 'ok' : 'bad'}">ietf archive ${perm.txt?.ok ? '✓' : '✗'}</span>`);
+    chips.push(`<span class="chip ${perm.mirror?.ok ? 'ok' : 'bad'}">funet mirror ${perm.mirror?.ok ? '✓' : '✗'}</span>`);
+  }
+  if (dt?.pages) chips.push(`<span class="chip">${dt.pages} pages</span>`);
+  $('detail').innerHTML = `
+    <h2>Draft Detail</h2>
+    <div class="draft-id">${d.id}</div>
+    <h3>${dt?.title || d.short}</h3>
+    <p class="brief">${brief?.text || d.summary}</p>
+    ${brief?.generatedBy === 'claude' ? '<p style="font-size:12px;color:var(--dim);margin-top:6px">Brief written by the Briefing Officer agent.</p>' : ''}
+    <div class="meta">${chips.join('')}</div>
+    <div class="links">
+      <a href="${d.urls.datatracker}" target="_blank" rel="noopener">Datatracker</a>
+      <a href="${d.urls.txt}" target="_blank" rel="noopener">Plain text</a>
+      <a href="${d.urls.html}" target="_blank" rel="noopener">HTML</a>
+      <a href="${d.urls.mirror}" target="_blank" rel="noopener">funet mirror</a>
+    </div>`;
+}
+
+function renderState(st) {
+  latestState = st;
+  // mode buttons
+  $('btn-oversight').className = 'toggle' + (st.mode === 'oversight' ? ' active' : '');
+  $('btn-auto').className = 'toggle' + (st.mode === 'autonomous' ? ' active auto' : '');
+  // hero content from the frontend agent
+  const fc = st.frontend?.content;
+  if (fc) {
+    $('hero-line').textContent = fc.heroLine;
+    $('status-line').textContent = fc.statusLine;
+  } else {
+    const live = Object.values(st.drafts || {}).filter(d => d.live).length;
+    $('status-line').textContent = `${live}/18 drafts confirmed live · agents warming up`;
+  }
+  if (st.crossref?.insight) $('insight').textContent = st.crossref.insight;
+  // agents
+  $('agents').innerHTML = Object.entries(st.agents || {}).map(([n, a]) => `
+    <div class="agent-row">
+      <span class="agent-name"><span class="dot ${a.healthy ? 'ok' : 'err'}"></span>${n}</span>
+      <span class="agent-detail">${a.lastResult || ''}<br>${a.runs} runs · ${a.errors} errors</span>
+    </div>`).join('') || '<p class="empty">Agents launching…</p>';
+  // pending
+  const p = st.pending || [];
+  $('pending').innerHTML = p.length ? p.map(item => `
+    <div class="pending-item">
+      <div class="pending-action">${item.action}</div>
+      <div class="pending-agent">${item.agent} · ${new Date(item.at).toLocaleTimeString()}</div>
+      <div class="btns">
+        <button class="btn approve" onclick="act('approve','${item.id}')">Approve</button>
+        <button class="btn reject" onclick="act('reject','${item.id}')">Reject</button>
+      </div>
+    </div>`).join('')
+    : `<p class="empty">${st.mode === 'autonomous' ? 'Autonomous mode — agents apply their own changes.' : 'No actions awaiting approval.'}</p>`;
+  // log
+  $('log').innerHTML = (st.activity || []).slice(0, 60).map(l => `
+    <div class="log-line ${l.level}">
+      <span class="t">${new Date(l.at).toLocaleTimeString()}</span>
+      <span class="a">${l.agent}</span>
+      <span>${l.msg}</span>
+    </div>`).join('');
+  if (selected) renderDetail();
+}
+
+async function poll() {
+  try {
+    renderState(await (await fetch('/api/state')).json());
+  } catch (e) { /* server restarting; try again next tick */ }
+}
+
+async function setMode(mode) {
+  await fetch('/api/mode', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode }) });
+  poll();
+}
+
+async function act(kind, id) {
+  await fetch(`/api/${kind}/${id}`, { method: 'POST' });
+  poll();
+}
+
+loadManifest().then(poll);
+setInterval(poll, 10000);
+</script>
+</body>
+</html>

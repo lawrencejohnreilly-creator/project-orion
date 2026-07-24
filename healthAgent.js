@@ -4,7 +4,7 @@
 // other agent, and if one reported an unhealthy last run or has gone silent
 // past twice its interval, re-runs it immediately.
 // ---------------------------------------------------------------------------
-import { state, log, recordRun } from "../state.js";
+import { state, log, recordRun } from "./state.js";
 
 export const name = "health-sentinel";
 export const intervalMs = 10 * 60 * 1000; // every 10 minutes

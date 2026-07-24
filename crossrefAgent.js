@@ -4,9 +4,9 @@
 // what that says about the suite's shape. Publishes graph stats plus a
 // one-line insight for the dashboard.
 // ---------------------------------------------------------------------------
-import { DRAFTS, EDGES } from "../drafts.js";
-import { state, log, recordRun, save } from "../state.js";
-import { askClaude, hasClaude } from "../claude.js";
+import { DRAFTS, EDGES } from "./drafts.js";
+import { state, log, recordRun, save } from "./state.js";
+import { askClaude, hasClaude } from "./claude.js";
 
 export const name = "crossref-cartographer";
 export const intervalMs = 12 * 60 * 60 * 1000; // twice a day

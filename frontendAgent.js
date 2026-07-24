@@ -6,9 +6,9 @@
 // Claude writes the copy; without one, it composes deterministically.
 // Changes go through the oversight queue.
 // ---------------------------------------------------------------------------
-import { DRAFTS, LAYERS } from "../drafts.js";
-import { state, log, recordRun, propose, save } from "../state.js";
-import { askClaude, hasClaude } from "../claude.js";
+import { DRAFTS, LAYERS } from "./drafts.js";
+import { state, log, recordRun, propose, save } from "./state.js";
+import { askClaude, hasClaude } from "./claude.js";
 
 export const name = "frontend-composer";
 export const intervalMs = 3 * 60 * 60 * 1000; // every 3 hours

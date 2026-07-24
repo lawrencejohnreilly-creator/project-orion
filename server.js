@@ -12,14 +12,14 @@
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { DRAFTS, LAYERS, EDGES, draftUrls } from "./src/drafts.js";
-import { state, publicState, load, save, approve, reject, log } from "./src/state.js";
-import { start, runNow, AGENTS } from "./src/orchestrator.js";
+import { DRAFTS, LAYERS, EDGES, draftUrls } from "./drafts.js";
+import { state, publicState, load, save, approve, reject, log } from "./state.js";
+import { start, runNow, AGENTS } from "./orchestrator.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
 app.get("/api/manifest", (_req, res) => {
   res.json({

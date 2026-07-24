@@ -4,12 +4,12 @@
 // on its own interval. Modeled on the UAEMF idea: autonomous entities under
 // one management frame, with a human-oversight/autonomous mode toggle.
 // ---------------------------------------------------------------------------
-import * as draftMonitor from "./agents/draftMonitor.js";
-import * as permanenceAgent from "./agents/permanenceAgent.js";
-import * as briefingAgent from "./agents/briefingAgent.js";
-import * as frontendAgent from "./agents/frontendAgent.js";
-import * as crossrefAgent from "./agents/crossrefAgent.js";
-import * as healthAgent from "./agents/healthAgent.js";
+import * as draftMonitor from "./draftMonitor.js";
+import * as permanenceAgent from "./permanenceAgent.js";
+import * as briefingAgent from "./briefingAgent.js";
+import * as frontendAgent from "./frontendAgent.js";
+import * as crossrefAgent from "./crossrefAgent.js";
+import * as healthAgent from "./healthAgent.js";
 import { log, recordRun } from "./state.js";
 
 export const AGENTS = [

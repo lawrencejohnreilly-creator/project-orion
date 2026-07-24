@@ -4,8 +4,8 @@
 // verifies each draft is reachable at the IETF archive AND at the independent
 // nic.funet.fi mirror. Two independent copies, continuously confirmed.
 // ---------------------------------------------------------------------------
-import { DRAFTS, draftUrls } from "../drafts.js";
-import { state, log, recordRun, save } from "../state.js";
+import { DRAFTS, draftUrls } from "./drafts.js";
+import { state, log, recordRun, save } from "./state.js";
 
 export const name = "permanence-verifier";
 export const intervalMs = 60 * 60 * 1000; // hourly

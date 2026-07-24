@@ -4,8 +4,8 @@
 // live revision / status / date data in state. Fully autonomous — read-only
 // against the outside world, so it applies its own updates in either mode.
 // ---------------------------------------------------------------------------
-import { DRAFTS } from "../drafts.js";
-import { state, log, recordRun, save } from "../state.js";
+import { DRAFTS } from "./drafts.js";
+import { state, log, recordRun, save } from "./state.js";
 
 const API = id => `https://datatracker.ietf.org/api/v1/doc/document/${id}/?format=json`;
 
