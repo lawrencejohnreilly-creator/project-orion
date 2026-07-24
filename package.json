@@ -1,0 +1,19 @@
+{
+  "name": "project-orion",
+  "version": "1.0.0",
+  "description": "Project Orion — autonomous agent constellation for the Reilly Protocol Suite (18 IETF Internet-Drafts)",
+  "author": "Lawrence John Reilly Jr. <lawrencejohnreilly@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
